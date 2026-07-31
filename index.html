@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070912">
+<title>The Oldest Analytics Company in the World</title>
+<link rel="stylesheet" href="assets/deck.css">
+<style>
+  /* ---------------------------------------------- slide mechanics */
+  html, body { height: 100%; overflow: hidden; }
+
+  .slide {
+    position: fixed; inset: 0; z-index: 2;
+    display: none;
+    padding: 7vmin 6vmin 7vmin;
+    flex-direction: column; justify-content: center;
+    opacity: 0;
+  }
+  .slide.on { display: flex; }
+  .slide.live { animation: slideIn .5s ease forwards; }
+  @keyframes slideIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .slide [data-a] { opacity: 0; }
+  .slide.live [data-a] { animation: enter .75s cubic-bezier(.2,.85,.3,1) both; }
+  @keyframes enter { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+  .inner { width: 100%; max-width: 116rem; margin: 0 auto; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 6vmin; align-items: center; }
+  .split.qr { grid-template-columns: auto 1fr; }
+  @media (max-aspect-ratio: 1/1) { .split { grid-template-columns: 1fr; gap: 3vmin; } }
+
+  /* ---------------------------------------------- chrome */
+  #bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--gold);
+    z-index: 20; transition: width .4s ease; }
+  #hud {
+    position: fixed; right: 2.2vmin; bottom: 1.8vmin; z-index: 20;
+    font-family: var(--mono); font-size: clamp(.6rem, 1.05vmin, .85rem);
+    color: var(--text-dim); letter-spacing: .14em;
+    display: flex; align-items: center; gap: 1.4em;
+  }
+  #hud b { color: var(--text-mid); font-weight: 400; }
+  #help {
+    position: fixed; inset: 0; z-index: 30; display: none;
+    background: rgba(4,5,12,.94); padding: 8vmin;
+    align-items: center; justify-content: center;
+  }
+  #help.on { display: flex; }
+  #help table { font-family: var(--mono); font-size: var(--t-body); border-collapse: collapse; }
+  #help td { padding: .5em 1.6em .5em 0; color: var(--text-mid); }
+  #help td:first-child { color: var(--gold); }
+
+  /* ---------------------------------------------- title slide */
+  .constel { position: relative; width: 100%; height: 30vmin; }
+  .constel canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* ---------------------------------------------- reveal grid */
+  .flipgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.2vmin; }
+  .flipcard {
+    aspect-ratio: 1; border: 1px solid var(--line); border-radius: 3px;
+    background: var(--panel);
+    display: grid; place-items: center;
+    font-family: var(--mono); font-size: clamp(.6rem, 1.5vmin, 1.1rem);
+    color: var(--text-dim); text-align: center; padding: .4em;
+    transition: transform .5s cubic-bezier(.3,.9,.3,1), background-color .5s, color .5s, border-color .5s;
+  }
+  .slide.live .flipcard { animation: flipin .7s cubic-bezier(.3,.9,.3,1) both; }
+  @keyframes flipin { from { transform: rotateY(90deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  .flipcard.same { background: rgba(227,178,60,.1); border-color: var(--gold); color: var(--gold); }
+
+  /* ---------------------------------------------- the paragraph */
+  .para { font-size: clamp(1rem, 2.15vmin, 1.9rem); line-height: 1.65; }
+  .para span { display: block; margin-bottom: .35em; position: relative; padding-right: 12em; }
+  .para em {
+    position: absolute; right: 0; top: .2em;
+    font-family: var(--mono); font-style: normal;
+    font-size: clamp(.55rem, 1.05vmin, .85rem);
+    text-transform: uppercase; letter-spacing: .14em;
+    color: var(--gold); border: 1px solid var(--gold-dim);
+    border-radius: 999px; padding: .25em .9em; white-space: nowrap;
+  }
+
+  /* ---------------------------------------------- timeline */
+  .tl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vmin; position: relative; }
+  .tl::before { content: ""; position: absolute; left: 0; right: 0; top: 1.1vmin;
+    height: 1px; background: linear-gradient(90deg, var(--gold-dim), var(--cyan-dim)); }
+  .tl-item { padding-top: 4vmin; position: relative; }
+  .tl-item::before { content: ""; position: absolute; top: .35vmin; left: 0;
+    width: 1.5vmin; height: 1.5vmin; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--gold); }
+  .tl-item:last-child::before { border-color: var(--cyan); }
+  .tl-when { font-family: var(--mono); font-size: var(--t-label); letter-spacing: .16em; color: var(--gold); }
+  .tl-item:last-child .tl-when { color: var(--cyan); }
+
+  /* ---------------------------------------------- dot field */
+  #twins { width: 100%; height: 42vmin; }
+
+  /* ---------------------------------------------- tiers */
+  .tier { display: grid; grid-template-columns: auto 1fr auto; gap: 3vmin;
+    align-items: center; padding: 2.4vmin 0; border-bottom: 1px solid var(--line-soft); }
+  .tier:last-child { border-bottom: 0; }
+  .tier-n { font-family: var(--mono); font-size: var(--t-h2); color: var(--text-dim); }
+  .verdict { font-family: var(--mono); font-size: var(--t-label); letter-spacing: .16em;
+    text-transform: uppercase; padding: .5em 1.2em; border-radius: 999px; white-space: nowrap; }
+  .verdict.real { color: var(--cyan); border: 1px solid var(--cyan-dim); }
+  .verdict.no   { color: var(--rose); border: 1px solid var(--rose); }
+
+  /* ---------------------------------------------- loop diagram */
+  .loop { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.4vmin; align-items: stretch; }
+  .loop-step {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 3px;
+    padding: 2vmin 1.6vmin; font-size: clamp(.8rem, 1.65vmin, 1.35rem);
+    line-height: 1.35; position: relative;
+  }
+  .loop-step b { display: block; font-family: var(--mono); font-size: var(--t-label);
+    color: var(--gold); letter-spacing: .12em; margin-bottom: .6em; }
+  .loop-step::after {
+    content: "→"; position: absolute; right: -1.15vmin; top: 50%;
+    transform: translateY(-50%); color: var(--gold-dim); font-size: 1.6vmin;
+  }
+  .loop-step:last-child::after { content: ""; }
+
+  /* ---------------------------------------------- stat grid */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3vmin 2vmin; }
+  .stat b { display: block; font-family: var(--mono); font-size: var(--t-label);
+    letter-spacing: .16em; text-transform: uppercase; color: var(--text-dim); margin-top: .5em; }
+
+  /* ---------------------------------------------- compare table */
+  .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0 3vmin; align-items: stretch; }
+  .vs-col { padding: 2.4vmin 0; }
+  .vs-mid { width: 1px; background: var(--line); }
+  .vs-row { padding: 1.4vmin 0; border-bottom: 1px solid var(--line-soft);
+    font-size: clamp(.85rem, 1.75vmin, 1.4rem); }
+  .vs-row:last-child { border-bottom: 0; }
+
+  /* ---------------------------------------------- takeaways */
+  .takes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vmin; }
+  .take { border-top: 2px solid var(--line); padding-top: 2vmin; }
+  .take:nth-child(1) { border-top-color: var(--cyan); }
+  .take:nth-child(2) { border-top-color: var(--gold); }
+  .take:nth-child(3) { border-top-color: var(--rose); }
+  .take b { display: block; font-family: var(--mono); font-size: var(--t-label);
+    letter-spacing: .18em; text-transform: uppercase; margin-bottom: 1.2vmin; }
+  .take:nth-child(1) b { color: var(--cyan); }
+  .take:nth-child(2) b { color: var(--gold); }
+  .take:nth-child(3) b { color: var(--rose); }
+
+  .qlist { display: flex; flex-direction: column; gap: 2vmin; counter-reset: q; }
+  .qitem { display: grid; grid-template-columns: 2.4em 1fr; gap: 1.6vmin; align-items: baseline;
+    font-size: clamp(1rem, 2.3vmin, 2rem); line-height: 1.35; }
+  .qitem::before { counter-increment: q; content: counter(q);
+    font-family: var(--mono); color: var(--gold); font-size: .75em; }
+
+  blockquote { margin: 0; }
+  .quote { font-size: clamp(1.2rem, 3.1vmin, 2.9rem); line-height: 1.35; font-style: italic; }
+  .quote-by { font-family: var(--mono); font-size: var(--t-label);
+    letter-spacing: .2em; text-transform: uppercase; color: var(--text-dim); margin-top: 1.6vmin; }
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<div id="haze" aria-hidden="true"></div>
+<div id="bar" style="width:0"></div>
+
+<!-- ══════════════════════ 1 · TITLE ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack center">
+    <p class="eyebrow" data-a>IDFC First Bank · Data &amp; Analytics</p>
+    <h1 class="hero" data-a>The Oldest Analytics<br>Company in the World</h1>
+    <div class="constel" data-a><canvas id="constel"></canvas></div>
+    <p class="lead" data-a style="font-size:var(--t-h2);color:var(--text)">
+      5,000 years. Zero validated predictions. <span class="gold">₹1,182 crore</span> last year.</p>
+    <p class="mono dim" data-a id="team">—</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 2 · THE PROMISE ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Eighteen minutes · three things for you</p>
+    <div class="stack" style="gap:3.4vmin">
+      <div class="row" data-a><span class="num-s gold">01</span>
+        <p class="h2 grow">We're about to run an experiment on this room.<br>
+          <span class="mid" style="font-size:var(--t-lead)">You will lose it — and knowing how won't help.</span></p></div>
+      <div class="row" data-a><span class="num-s gold">02</span>
+        <p class="h2 grow">The unit economics of a ₹1,182 crore business.<br>
+          <span class="mid" style="font-size:var(--t-lead)">The model is genuinely worth stealing.</span></p></div>
+      <div class="row" data-a><span class="num-s cyan">03</span>
+        <p class="h2 grow">One number — <span class="cyan">1.13</span> — that changes how you talk to your team tomorrow.<br>
+          <span class="mid" style="font-size:var(--t-lead)">The biggest number in this deck. It isn't astrology's. It's yours.</span></p></div>
+    </div>
+    <p class="lead" data-a>Nothing here asks you to believe in astrology. Or to not believe in it.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 3 · QR: THE READING ══════════════════════ -->
+<section class="slide" data-q="reading">
+  <div class="inner split qr">
+    <div class="qr-wrap" data-a>
+      <div class="qr-frame"><canvas data-qr="reading"></canvas></div>
+      <p class="qr-url" data-qrurl="reading">—</p>
+    </div>
+    <div class="stack">
+      <p class="eyebrow" data-a>Before we start · 40 seconds</p>
+      <h2 class="h1" data-a>Scan it.<br>Get your reading.</h2>
+      <p class="lead" data-a>Date of birth, time, first letter of your name.<br>
+        Then rate how well it describes you, 1 to 5.</p>
+      <p class="lead gold" data-a style="font-size:var(--t-h2)">Don't say your number out loud.</p>
+      <p class="h2" data-a><span class="live-dot" data-dot></span>
+        <span class="mono" data-count-for="reading">0</span>
+        <span class="mid" style="font-size:var(--t-lead)"> readings cast</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ 4 · LIVE RATINGS ══════════════════════ -->
+<section class="slide" data-q="reading">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>How accurate was your reading?</p>
+    <div class="split" style="align-items:center">
+      <div class="bars" data-a data-bars="reading" data-keys="1|2|3|4|5" data-labels="1|2|3|4|5"></div>
+      <div class="stack center" data-a>
+        <p class="num gold" data-avg="reading">—</p>
+        <p class="eyebrow">This room's average</p>
+        <hr class="rule" style="margin:2vmin 0">
+        <p class="num-s cyan">4.26</p>
+        <p class="eyebrow sci">Forer's students, 1948</p>
+      </div>
+    </div>
+  </div>
+  <div class="cite"><span>Forer, B.R. (1948). "The fallacy of personal validation." Journal of Abnormal and Social Psychology 44(1), 118–123.</span></div>
+</section>
+
+<!-- ══════════════════════ 5 · THE REVEAL ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack center">
+    <p class="eyebrow" data-a>Now look closely</p>
+    <h2 class="hero" data-a>You all got<br>the <span class="gold">same paragraph</span>.</h2>
+    <div class="flipgrid" data-a id="flipgrid"></div>
+    <p class="lead" data-a>Different birth dates. Different times. Different signs, ascendants, nakshatras.<br>
+      <span style="color:var(--text)">One identical text.</span></p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 6 · FORER ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack">
+      <p class="eyebrow" data-a>1948</p>
+      <h2 class="h1" data-a>Bertram Forer handed his students<br>a personality analysis each.</h2>
+      <p class="lead" data-a>Every sheet was identical.<br>
+        He had copied it out of a <span class="gold">newsstand astrology book</span>.</p>
+    </div>
+    <div class="stack center" data-a>
+      <p class="num gold">4.26</p>
+      <p class="eyebrow">Average accuracy rating, out of 5</p>
+      <p class="lead" style="margin-top:2vmin">Seventy-eight years later,<br>this room scored it
+        <span class="mono gold" data-avg="reading">—</span>.</p>
+    </div>
+  </div>
+  <div class="cite"><span>Forer, B.R. (1948), J. Abnormal &amp; Social Psychology 44(1), 118–123 — the "Barnum effect".</span></div>
+</section>
+
+<!-- ══════════════════════ 7 · ANATOMY ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Why nothing in it could ever be wrong</p>
+    <div class="para" data-a>
+      <span>You have a great need for other people to like and admire you.<em>true of everyone</em></span>
+      <span>You have a great deal of unused capacity you haven't turned to your advantage.<em>flattery</em></span>
+      <span>At times you are extroverted and sociable, at other times introverted and reserved.<em>a trait and its opposite</em></span>
+      <span>You have found it unwise to be too frank in revealing yourself to others.<em>can't be falsified</em></span>
+      <span>Some of your aspirations tend to be pretty unrealistic.<em>vague, feels precise</em></span>
+    </div>
+    <p class="lead" data-a>The reading didn't personalise itself. <span class="gold">You did</span> — using your own memories, in about four seconds.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 8 · FEYNMAN ══════════════════════ -->
+<section class="slide">
+  <div class="inner center stack">
+    <blockquote data-a>
+      <p class="quote">“The first principle is that you must not fool yourself —<br>
+        and you are <span class="gold">the easiest person</span> to fool.”</p>
+      <p class="quote-by">Richard Feynman · Caltech commencement, 1974</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ══════════════════════ 9 · HISTORY ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Five thousand years, in thirty seconds</p>
+    <div class="tl">
+      <div class="tl-item" data-a>
+        <p class="tl-when">c. 1000 BCE</p>
+        <p class="h2">7,000 omens</p>
+        <p class="body">Babylonian priests log the sky on 70 clay tablets. The first observational database.</p>
+      </div>
+      <div class="tl-item" data-a>
+        <p class="tl-when">410 BCE</p>
+        <p class="h2">It gets personal</p>
+        <p class="body">The first horoscope cast for an individual, not for the king.</p>
+      </div>
+      <div class="tl-item" data-a>
+        <p class="tl-when">Ancient India</p>
+        <p class="h2">A calendar</p>
+        <p class="body">Jyotisha begins as timekeeping — fixing the hour for rituals. Not personality. <span class="gold">A scheduling problem.</span></p>
+      </div>
+      <div class="tl-item" data-a>
+        <p class="tl-when">1930</p>
+        <p class="h2">The 12 signs</p>
+        <p class="body">A newspaper runs a horoscope column. The format you know is younger than the Eiffel Tower.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cite"><span>Enūma Anu Enlil, ~70 tablets. Vedāṅga Jyotiṣa, attributed to Lagadha.</span><span>Britannica; Internet Encyclopedia of Philosophy, "Hellenistic Astrology".</span></div>
+</section>
+
+<!-- ══════════════════════ 10 · TIME TWINS ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack">
+      <p class="eyebrow sci" data-a>So — has anyone tested it?</p>
+      <h2 class="h1" data-a><span class="cyan">2,000 babies.</span><br>One London week.</h2>
+      <p class="lead" data-a>Born minutes apart, same city, same sky.<br>
+        Followed for decades across <strong>100+ traits</strong> — IQ, occupation, anxiety, marriage, sporting ability.</p>
+      <p class="h2 cyan" data-a>Statistically, they grew up strangers.</p>
+    </div>
+    <canvas id="twins" data-a></canvas>
+  </div>
+  <div class="cite"><span>Dean, G. &amp; Kelly, I.W. (2003). Journal of Consciousness Studies 10(6–7) — UK National Child Development Study, births 3–9 March 1958.</span></div>
+</section>
+
+<!-- ══════════════════════ 11 · THE TWIST ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow sci" data-a>Except</p>
+    <h2 class="h1" data-a>Your birth month <span class="cyan">does</span> predict things about you.</h2>
+    <div class="split" data-a>
+      <div class="card cyan-edge">
+        <p class="eyebrow sci">What it actually predicts</p>
+        <p class="lead" style="color:var(--text)">Allergy risk · asthma · myopia · ADHD ·<br>whether you made the school team</p>
+      </div>
+      <div class="card gold-edge">
+        <p class="eyebrow">Why</p>
+        <p class="lead" style="color:var(--text)">Vitamin D in the womb · dust-mite season ·<br>and the <span class="gold">school admission cut-off date</span></p>
+      </div>
+    </div>
+    <p class="h2" data-a>Astrology found a real pattern — and assigned it <span class="gold">the wrong cause</span>.</p>
+    <p class="lead" data-a>That isn't a 4,000-year-old mistake. That's every model where a feature predicts beautifully and nobody asks why.</p>
+  </div>
+  <div class="cite"><span>Boland et al. (2015), J. Am. Med. Informatics Assoc. — phenome-wide birth-month study.</span><span>Relative age effect: Musch &amp; Grondin (2001), Developmental Review 21(2).</span></div>
+</section>
+
+<!-- ══════════════════════ 12 · QR: WORD CLOUD ══════════════════════ -->
+<section class="slide" data-q="uncertain">
+  <div class="inner split qr">
+    <div class="qr-wrap" data-a>
+      <div class="qr-frame"><canvas data-qr="uncertain"></canvas></div>
+      <p class="qr-url" data-qrurl="uncertain">—</p>
+    </div>
+    <div class="stack">
+      <p class="eyebrow" data-a>Your turn · one word</p>
+      <h2 class="h1" data-a>When the future feels uncertain,<br>what do you <span class="gold">reach for</span>?</h2>
+      <p class="lead" data-a>One word. No wrong answers. It goes straight on the screen.</p>
+      <p class="h2" data-a><span class="live-dot" data-dot></span>
+        <span class="mono" data-count-for="uncertain">0</span>
+        <span class="mid" style="font-size:var(--t-lead)"> answers in</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ 13 · THE CLOUD ══════════════════════ -->
+<section class="slide" data-q="uncertain">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>What this room reaches for</p>
+    <div class="cloud" data-a data-cloud="uncertain"></div>
+    <p class="lead" data-a>Every one of those is the same move: <span class="gold">converting an unbounded unknown into something with a shape.</span></p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 14 · UNCERTAINTY DRIVES IT ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack">
+      <p class="eyebrow" data-a>The demand curve</p>
+      <h2 class="h1" data-a>Belief isn't about<br>intelligence.<br>It's about <span class="gold">control</span>.</h2>
+      <p class="lead" data-a>Israeli citizens under missile attack in the Gulf War showed significantly
+        more magical thinking than those in safe areas — strongest in people least tolerant of ambiguity.</p>
+    </div>
+    <div class="stack center" data-a>
+      <p class="num-s gold">2020</p>
+      <p class="lead">Google searches for “birth chart” and “astrology” hit a <strong>five-year peak</strong>.</p>
+      <hr class="rule" style="margin:2vmin 0">
+      <p class="h2 gold">Demand for prediction is a leading indicator of collective anxiety.</p>
+    </div>
+  </div>
+  <div class="cite"><span>Keinan, G. (1994). J. Personality and Social Psychology 67(1), 48–55.</span><span>Google Trends, 2020.</span></div>
+</section>
+
+<!-- ══════════════════════ 15 · THREE TIERS ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>So does belief actually do anything?</p>
+    <h2 class="h1" data-a>Three different claims. <span class="cyan">Two are real.</span></h2>
+    <div>
+      <div class="tier" data-a>
+        <span class="tier-n">01</span>
+        <p class="h2 grow">Belief changes <span class="cyan">you</span><br>
+          <span class="mid" style="font-size:var(--t-lead)">Placebo. Nocebo. Self-efficacy.</span></p>
+        <span class="verdict real">Real · large</span>
+      </div>
+      <div class="tier" data-a>
+        <span class="tier-n">02</span>
+        <p class="h2 grow">Belief changes <span class="cyan">other people</span><br>
+          <span class="mid" style="font-size:var(--t-lead)">And other people are what reality is made of.</span></p>
+        <span class="verdict real">Real · large</span>
+      </div>
+      <div class="tier" data-a>
+        <span class="tier-n">03</span>
+        <p class="h2 grow">Belief changes <span class="gold">the universe</span><br>
+          <span class="mid" style="font-size:var(--t-lead)">Thought alone bends events toward you.</span></p>
+        <span class="verdict no">No</span>
+      </div>
+    </div>
+    <p class="lead" data-a>Astrology and manifestation sell you the third — and quietly deliver the first two.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 16 · PLACEBO ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow sci" data-a>Tier one · belief has a dose</p>
+    <h2 class="h1" data-a>Patients were <span class="cyan">told</span> the pills were fake.<br>They worked anyway.</h2>
+    <div class="split" data-a>
+      <div class="stack center">
+        <p class="num cyan">59<span style="font-size:.45em">%</span></p>
+        <p class="eyebrow sci">Told it was a placebo — felt relief</p>
+      </div>
+      <div class="stack center">
+        <p class="num" style="color:var(--text-dim)">35<span style="font-size:.45em">%</span></p>
+        <p class="eyebrow" style="color:var(--text-dim)">No treatment</p>
+      </div>
+    </div>
+    <p class="h2" data-a>Over <span class="cyan">90%</span> of painkillers developed in the US in the last decade
+      failed to beat a sugar pill.</p>
+    <p class="lead" data-a>Belief is not a soft variable. It is beating a four-billion-dollar R&amp;D budget in a fair fight.</p>
+  </div>
+  <div class="cite"><span>Kaptchuk et al. (2010), PLoS ONE 5(12) — open-label placebo in IBS.</span><span>Scientific American (2017), "Placebo effect grows in U.S."</span></div>
+</section>
+
+<!-- ══════════════════════ 17 · NOCEBO ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack">
+      <p class="eyebrow warn" data-a>The same dial, turned the other way</p>
+      <h2 class="h1" data-a><span class="rose">Nocebo.</span><br>Latin for <em>“I will harm.”</em></h2>
+      <p class="lead" data-a>Women who <em>believed</em> they were prone to heart disease were
+        <strong style="color:var(--text)">nearly four times more likely to die</strong> than women
+        with the <span class="rose">same risk factors</span> who didn't hold that belief.</p>
+    </div>
+    <div class="stack" data-a>
+      <div class="card rose-edge">
+        <p class="lead" style="color:var(--text)">So when an astrologer says
+          <em>“the next two years are dangerous for you”</em> —<br><br>
+          that isn't entertainment. <span class="rose">That's a prescription.</span></p>
+      </div>
+      <p class="lead">If belief is strong enough to heal, it is strong enough to harm.
+        You don't get to claim one without owning the other.</p>
+    </div>
+  </div>
+  <div class="cite"><span>Eaker, Pinsky &amp; Castelli (1992), Am. J. Epidemiology 135(8) — Framingham Heart Study, 20-year follow-up.</span></div>
+</section>
+
+<!-- ══════════════════════ 18 · MANIFESTATION AS REWIRING ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Tier three, honestly</p>
+    <h2 class="h1" data-a>Manifestation isn't magic.<br>It's <span class="gold">attention</span>.</h2>
+    <div class="loop">
+      <div class="loop-step" data-a><b>Name it</b>You write the goal down, say it, put it on a wall.</div>
+      <div class="loop-step" data-a><b>Filter shifts</b>Your attention re-weights. The brain starts flagging what matches.</div>
+      <div class="loop-step" data-a><b>You notice</b>Openings that were always there now register as opportunities.</div>
+      <div class="loop-step" data-a><b>You act</b>You ask, apply, negotiate, show up — differently.</div>
+      <div class="loop-step" data-a><b>It lands</b>Belief and outcome finally match. <span class="gold">“I manifested it.”</span></div>
+    </div>
+    <p class="lead" data-a>Every step of that loop is real. The repetition genuinely rewires what you notice and what you do.</p>
+    <p class="h2" data-a>The only false step is <span class="gold">where the causation gets credited</span> —
+      to the universe, instead of to your own attention and behaviour.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 19 · THE CATCH ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack">
+      <p class="eyebrow warn" data-a>But there's a catch, and it's counterintuitive</p>
+      <h2 class="h1" data-a>Vividly picturing success makes you <span class="rose">less</span> likely to get it.</h2>
+      <p class="lead" data-a>Four separate samples. The more vividly people fantasised about the outcome beforehand:</p>
+      <p class="h2 rose" data-a>less weight lost · slower recovery · <strong>lower starting salaries</strong></p>
+      <p class="lead" data-a>The fantasy pays you the feeling in advance. Your brain banks the reward, and resolve drops.</p>
+    </div>
+    <div class="stack" data-a>
+      <div class="card gold-edge">
+        <p class="eyebrow">The fix is one word</p>
+        <p class="h2" style="line-height:1.5">Wish · Outcome ·
+          <span class="gold">Obstacle</span> · Plan</p>
+        <p class="lead">Add the barrier and the same optimism converts into commitment instead of comfort.
+          If-then plans carry an effect size around <span class="mono gold">0.65</span> on goal attainment.</p>
+      </div>
+      <p class="lead">Same daydream. Point it at the obstacle, not the trophy.</p>
+    </div>
+  </div>
+  <div class="cite"><span>Oettingen, G. &amp; Mayer, D. (2002), J. Personality and Social Psychology 83(5), 1198–1212.</span><span>Gollwitzer &amp; Sheeran (2006) — implementation intentions meta-analysis.</span></div>
+</section>
+
+<!-- ══════════════════════ 20 · PYGMALION ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack center" data-a>
+      <p class="num cyan">1.13</p>
+      <p class="eyebrow sci">Effect size — a manager's expectation<br>on an employee's performance</p>
+    </div>
+    <div class="stack">
+      <p class="eyebrow sci" data-a>Tier two · promise number three</p>
+      <h2 class="h1" data-a>The biggest number in this deck isn't astrology's.<br><span class="cyan">It's yours.</span></h2>
+      <p class="lead" data-a><strong style="color:var(--text)">79%</strong> of people in the high-expectation
+        group outperformed the average of the control group.<br>
+        The effect is <span class="cyan">largest for people who had been underestimated</span>.</p>
+      <p class="h2" data-a>You are already running a self-fulfilling prophecy on your team.<br>
+        The only question is which direction it points.</p>
+    </div>
+  </div>
+  <div class="cite"><span>McNatt, D.B. (2000), J. Applied Psychology 85(2) — Pygmalion in work organisations, meta-analysis.</span><span>Rosenthal &amp; Jacobson (1968), Pygmalion in the Classroom.</span></div>
+</section>
+
+<!-- ══════════════════════ 21 · QR: GUESS ══════════════════════ -->
+<section class="slide" data-q="guess">
+  <div class="inner split qr">
+    <div class="qr-wrap" data-a>
+      <div class="qr-frame"><canvas data-qr="guess"></canvas></div>
+      <p class="qr-url" data-qrurl="guess">—</p>
+    </div>
+    <div class="stack">
+      <p class="eyebrow" data-a>Take a guess</p>
+      <h2 class="h1" data-a>One Indian astrology app.<br>What did it earn <span class="gold">last year</span>?</h2>
+      <p class="lead" data-a>Four options. Commit before you see the answer.</p>
+      <p class="h2" data-a><span class="live-dot" data-dot></span>
+        <span class="mono" data-count-for="guess">0</span>
+        <span class="mid" style="font-size:var(--t-lead)"> guesses in</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ 22 · GUESS RESULTS ══════════════════════ -->
+<section class="slide" data-q="guess">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>The room's guesses</p>
+    <div class="bars" data-a data-bars="guess" data-keys="a|b|c|d"
+         data-labels="₹120 Cr|₹450 Cr|₹1,182 Cr|₹3,000 Cr" data-correct="c"></div>
+    <p class="h1" data-a id="guess-answer" style="visibility:hidden">
+      <span class="gold">₹1,182 crore.</span> <span class="mid" style="font-size:var(--t-h2)">And ₹250 crore of it was profit.</span></p>
+    <p class="lead dim" data-a>Press <span class="mono">A</span> to reveal.</p>
+  </div>
+  <div class="cite"><span>AstroTalk FY25, reported by Entrackr / IPO Central. Figures also in the team's business brief.</span></div>
+</section>
+
+<!-- ══════════════════════ 23 · THE NUMBERS ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>One company. One year.</p>
+    <div class="stats">
+      <div class="stat" data-a><p class="num-s gold" data-count="1182" data-prefix="₹" data-suffix=" Cr">0</p><b>Revenue</b></div>
+      <div class="stat" data-a><p class="num-s gold" data-count="250" data-prefix="₹" data-suffix=" Cr">0</p><b>Net profit</b></div>
+      <div class="stat" data-a><p class="num-s gold" data-count="21" data-suffix="%">0</p><b>Net margin</b></div>
+      <div class="stat" data-a><p class="num-s cyan" data-count="34" data-prefix="$" data-suffix="M">0</p><b>Total capital raised</b></div>
+      <div class="stat" data-a><p class="num-s" data-count="43" data-suffix="M">0</p><b>Registered users</b></div>
+      <div class="stat" data-a><p class="num-s" data-count="45000" data-suffix="+">0</p><b>Astrologers on the platform</b></div>
+      <div class="stat" data-a><p class="num-s" data-count="4" data-suffix="M">0</p><b>Consultation minutes / day</b></div>
+      <div class="stat" data-a><p class="num-s" data-count="85" data-suffix="%">0</p><b>Paid via in-app wallet</b></div>
+    </div>
+    <p class="h2" data-a>Profitable. Asset-light. No inventory, no logistics.<br>
+      <span class="mid" style="font-size:var(--t-lead)">More capital-efficient than almost anything else in Indian consumer tech.</span></p>
+  </div>
+  <div class="cite"><span>AstroTalk FY25 figures — Entrackr, IPO Central; compiled in "The Business of Belief" brief.</span></div>
+</section>
+
+<!-- ══════════════════════ 24 · THE FLYWHEEL ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Why it never stops turning</p>
+    <div class="loop">
+      <div class="loop-step" data-a><b>Life event</b>Career. Marriage. Money. Health.</div>
+      <div class="loop-step" data-a><b>Consultation</b>Instant, private, in your language, ₹5–₹200 a minute.</div>
+      <div class="loop-step" data-a><b>A remedy</b>A gemstone, a yantra, a puja — sold by the same platform.</div>
+      <div class="loop-step" data-a><b>Behavioural data</b>Every search, rating and repeat visit is captured.</div>
+      <div class="loop-step" data-a><b>Better matching</b>Which pulls the next consultation forward.</div>
+    </div>
+    <p class="h2" data-a>The diagnosis is free. The cure is billed.<br>
+      <span class="gold">And the same party supplies both.</span></p>
+    <p class="lead" data-a>There is no churn event here. A wrong prediction isn't a refund — it's a follow-up appointment.</p>
+  </div>
+  <div class="cite"><span>Marketplace flywheel as set out in "The Business of Belief: India's Digital Astrology Economy".</span></div>
+</section>
+
+<!-- ══════════════════════ 25 · DATA IS THE ASSET ══════════════════════ -->
+<section class="slide">
+  <div class="inner split">
+    <div class="stack">
+      <p class="eyebrow sci" data-a>The part that concerns us directly</p>
+      <h2 class="h1" data-a>It isn't an astrology company.<br>It's a <span class="cyan">marketplace</span>.</h2>
+      <p class="lead" data-a>Customer segmentation. Recommendation engines. Demand forecasting.
+        Churn prediction. CAC, LTV, ARPU, NPS.</p>
+      <p class="h2 cyan" data-a>The most scalable asset it owns is not astrology.<br>It's the behavioural data.</p>
+    </div>
+    <div class="stack" data-a>
+      <div class="card cyan-edge">
+        <p class="eyebrow sci">Which raises the uncomfortable one</p>
+        <p class="lead" style="color:var(--text)">A list of people who are anxious about their future,
+          ranked by willingness to pay, is one of the most powerful datasets that can exist.</p>
+        <p class="lead">43 million of them, at one company.</p>
+      </div>
+      <p class="lead">Everyone in this room works with a version of that list.</p>
+    </div>
+  </div>
+  <div class="cite"><span>"The Business of Belief" — data value chain and analytics KPI framework.</span></div>
+</section>
+
+<!-- ══════════════════════ 26 · THE GAP ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow warn" data-a>Now the part that actually matters</p>
+    <div class="split" data-a style="align-items:center">
+      <div class="stack center">
+        <p class="num" data-count="197" data-suffix="M">0</p>
+        <p class="eyebrow">Indians who need mental health support</p>
+      </div>
+      <div class="stack center">
+        <p class="num rose" data-count="9000">0</p>
+        <p class="eyebrow warn">Practising psychiatrists</p>
+      </div>
+    </div>
+    <div class="row center" data-a style="justify-content:center;gap:6vmin">
+      <p class="lead"><span class="mono num-s rose">0.3</span><br>psychiatrists per 100,000 people</p>
+      <p class="lead"><span class="mono num-s rose">&gt;83%</span><br>treatment gap</p>
+      <p class="lead"><span class="mono num-s rose">15–29</span><br>suicide is the leading cause of death</p>
+    </div>
+  </div>
+  <div class="cite"><span>National Mental Health Survey; Indian Journal of Psychiatry (2019) — treatment gap.</span><span>WHO recommends 3 psychiatrists per 100,000; India has ~0.3.</span></div>
+</section>
+
+<!-- ══════════════════════ 27 · 2 AM ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>2 AM. You can't sleep about your job.</p>
+    <div class="vs" data-a>
+      <div class="vs-col">
+        <p class="eyebrow sci" style="margin-bottom:1.5vmin">Therapy</p>
+        <p class="vs-row">₹1,000–₹3,000 a session</p>
+        <p class="vs-row">Three weeks for an appointment</p>
+        <p class="vs-row">Usually in English</p>
+        <p class="vs-row">Your family asks why</p>
+        <p class="vs-row">“Let's explore that feeling.”</p>
+      </div>
+      <div class="vs-mid"></div>
+      <div class="vs-col">
+        <p class="eyebrow" style="margin-bottom:1.5vmin">An astrologer, on an app</p>
+        <p class="vs-row">₹100 for twenty minutes</p>
+        <p class="vs-row">Right now</p>
+        <p class="vs-row">In your language</p>
+        <p class="vs-row">Your family booked it</p>
+        <p class="vs-row">A cause, a timeline, and something to do</p>
+      </div>
+    </div>
+    <p class="h1" data-a>Astrology isn't winning because we're gullible.<br>
+      <span class="gold">It's winning because it showed up.</span></p>
+    <p class="lead" data-a>And that is exactly where the harm lives too — an astrologer is not trained to recognise
+      clinical depression. Accessibility and risk are the same fact.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 28 · MERTON ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack center">
+    <p class="eyebrow" data-a>1948 · the same year as Forer's paragraph</p>
+    <blockquote data-a>
+      <p class="quote">“A <span class="gold">false</span> definition of the situation evoking a new behaviour<br>
+        which makes the originally false conception <span class="cyan">come true</span>.”</p>
+      <p class="quote-by">Robert K. Merton · coining “the self-fulfilling prophecy”</p>
+    </blockquote>
+    <hr class="rule" data-a style="max-width:40vmin">
+    <p class="h2" data-a>He needed one example to make it unforgettable.<br>He chose <span class="gold">a run on a bank</span>.</p>
+    <p class="lead" data-a>A solvent bank. A rumour. Depositors who act on the rumour.<br>
+      A bank that is now, genuinely, insolvent.</p>
+    <p class="h1" data-a>We work at a bank.</p>
+  </div>
+  <div class="cite"><span>Merton, R.K. (1948). "The Self-Fulfilling Prophecy." The Antioch Review 8(2), 193–210.</span></div>
+</section>
+
+<!-- ══════════════════════ 29 · QR: FINAL ══════════════════════ -->
+<section class="slide" data-q="horoscope">
+  <div class="inner split qr">
+    <div class="qr-wrap" data-a>
+      <div class="qr-frame"><canvas data-qr="horoscope"></canvas></div>
+      <p class="qr-url" data-qrurl="horoscope">—</p>
+    </div>
+    <div class="stack">
+      <p class="eyebrow" data-a>Last question · be honest</p>
+      <h2 class="h1" data-a>After all that —<br>will you still check<br>your <span class="gold">horoscope</span>?</h2>
+      <p class="h2" data-a><span class="live-dot" data-dot></span>
+        <span class="mono" data-count-for="horoscope">0</span>
+        <span class="mid" style="font-size:var(--t-lead)"> answers in</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ 30 · FINAL RESULTS ══════════════════════ -->
+<section class="slide" data-q="horoscope">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>And there it is</p>
+    <div class="bars" data-a data-bars="horoscope" data-keys="yes|fun|no"
+         data-labels="Yes|Only for fun|No"></div>
+    <p class="h1" data-a>Eighteen minutes of evidence does not undo<br>
+      <span class="gold">four seconds of feeling understood</span>.</p>
+    <p class="lead" data-a>That gap is the whole industry. And it is the whole presentation.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ 31 · TAKE-HOMES ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Three things to take back to your desk</p>
+    <div class="takes">
+      <div class="take" data-a>
+        <b>As analysts</b>
+        <p class="h2">Astrology is 5,000 years of correlation with no holdout set.</p>
+        <p class="lead">It never kept score, so it never had to learn. Ask of your own work:
+          what result would prove this wrong, and what does my data structurally not see?</p>
+      </div>
+      <div class="take" data-a>
+        <b>On mental health</b>
+        <p class="h2">People aren't buying predictions. They're buying someone who answers.</p>
+        <p class="lead">197 million need support; 9,000 psychiatrists exist. Whatever fills that gap
+          will be chosen for availability, not accuracy. That is a design problem, and it is ours.</p>
+      </div>
+      <div class="take" data-a>
+        <b>As people</b>
+        <p class="h2">Your expectation of someone changes what they become. Effect size 1.13.</p>
+        <p class="lead">Biggest for the people who've been underestimated. It costs nothing,
+          it works tomorrow, and you're already doing it in one direction or the other.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ 32 · OPEN QUESTIONS ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack">
+    <p class="eyebrow" data-a>Five questions. We're not going to answer them.</p>
+    <div class="qlist">
+      <p class="qitem" data-a>What result would prove my last forecast wrong?</p>
+      <p class="qitem" data-a>Would my insight still sound true if the numbers were reversed?</p>
+      <p class="qitem" data-a>What does my dataset structurally <em>not</em> see?</p>
+      <p class="qitem" data-a>Who on my team am I underestimating?</p>
+      <p class="qitem" data-a>Have I added the obstacle, or only the wish?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ 33 · CLOSE ══════════════════════ -->
+<section class="slide">
+  <div class="inner stack center">
+    <blockquote data-a>
+      <p class="quote">“It is far better to grasp the universe as it really is<br>
+        than to persist in delusion, however satisfying and reassuring.”</p>
+      <p class="quote-by">Carl Sagan · The Demon-Haunted World, 1995</p>
+    </blockquote>
+    <hr class="rule" data-a style="max-width:40vmin">
+    <p class="h2" data-a>Astrology has run 5,000 years without one validated prediction,
+      because it worked out early that people don't want accuracy.<br>
+      They want <span class="gold">certainty, a story, and someone who picks up the phone</span>.</p>
+    <p class="h1" data-a>We can be proven wrong.<br><span class="cyan">That's not our weakness — that's the product.</span></p>
+    <p class="lead dim" data-a>Thank you.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ chrome ══════════════════════ -->
+<div id="hud">
+  <span><span class="live-dot off" id="conn"></span><span id="conn-txt">offline</span></span>
+  <span><b id="cur">1</b> / <span id="tot">1</span></span>
+  <span class="dim">? help</span>
+</div>
+
+<div id="help">
+  <table>
+    <tr><td>→ · Space · PgDn</td><td>Next slide</td></tr>
+    <tr><td>← · PgUp</td><td>Previous slide</td></tr>
+    <tr><td>Home / End</td><td>First / last slide</td></tr>
+    <tr><td>F</td><td>Fullscreen</td></tr>
+    <tr><td>A</td><td>Reveal the answer (guess slide)</td></tr>
+    <tr><td>R</td><td>Clear this slide's live responses</td></tr>
+    <tr><td>?</td><td>Close this</td></tr>
+  </table>
+</div>
+
+<script src="config.js"></script>
+<script src="assets/qr.js"></script>
+<script src="assets/live.js"></script>
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  $("#team").textContent = (window.DECK_CONFIG || {}).teamName || "";
+
+  /* ═════════════════════════════════════════════ starfield */
+  (() => {
+    const cv = $("#sky"), ctx = cv.getContext("2d");
+    let stars = [];
+    const size = () => {
+      cv.width = innerWidth; cv.height = innerHeight;
+      const n = Math.min(220, Math.round(innerWidth * innerHeight / 9000));
+      stars = Array.from({ length: n }, () => ({
+        x: Math.random() * cv.width, y: Math.random() * cv.height,
+        r: Math.random() * 1.3 + .2, p: Math.random() * 6.28,
+        s: Math.random() * .012 + .002, d: Math.random() * .04 + .008
+      }));
+    };
+    const draw = () => {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      for (const st of stars) {
+        st.p += st.s; st.y -= st.d;
+        if (st.y < -2) { st.y = cv.height + 2; st.x = Math.random() * cv.width; }
+        ctx.globalAlpha = .12 + Math.abs(Math.sin(st.p)) * .5;
+        ctx.fillStyle = st.r > 1.1 ? "#D8CBA8" : "#B9C6DA";
+        ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.284); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    };
+    const still = () => {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.globalAlpha = .38; ctx.fillStyle = "#B9C6DA";
+      for (const st of stars) { ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.284); ctx.fill(); }
+      ctx.globalAlpha = 1;
+    };
+    size(); addEventListener("resize", () => { size(); if (reduce) still(); });
+    reduce ? still() : draw();
+  })();
+
+  /* ═════════════════════════════════════════════ title constellation */
+  (() => {
+    const cv = $("#constel");
+    const fit = () => {
+      const r = cv.getBoundingClientRect();
+      cv.width = r.width * 2; cv.height = r.height * 2;
+      const ctx = cv.getContext("2d");
+      ctx.scale(2, 2);
+      const W = r.width, H = r.height;
+      // a loose, invented constellation — not a real one, just a shape
+      const pts = [[.14,.62],[.27,.32],[.40,.55],[.52,.22],[.63,.5],[.76,.3],[.88,.6]]
+        .map(([x, y]) => [x * W, y * H]);
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = "rgba(227,178,60,.35)"; ctx.lineWidth = 1;
+      ctx.beginPath();
+      pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+      ctx.stroke();
+      pts.forEach(([x, y], i) => {
+        ctx.beginPath();
+        ctx.fillStyle = i % 2 ? "#6FD3E8" : "#E3B23C";
+        ctx.arc(x, y, i === 3 ? 4.5 : 3, 0, 6.284); ctx.fill();
+        ctx.globalAlpha = .18; ctx.beginPath(); ctx.arc(x, y, 11, 0, 6.284); ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+    };
+    addEventListener("resize", fit);
+    setTimeout(fit, 60);
+  })();
+
+  /* ═════════════════════════════════════════════ time-twins dot field */
+  const drawTwins = () => {
+    const cv = $("#twins"); if (!cv) return;
+    const r = cv.getBoundingClientRect();
+    cv.width = r.width * 2; cv.height = r.height * 2;
+    const ctx = cv.getContext("2d"); ctx.scale(2, 2);
+    ctx.clearRect(0, 0, r.width, r.height);
+    for (let i = 0; i < 2000; i++) {
+      const x = Math.random() * r.width, y = Math.random() * r.height;
+      ctx.globalAlpha = .16 + Math.random() * .5;
+      ctx.fillStyle = "#6FD3E8";
+      ctx.beginPath(); ctx.arc(x, y, 1.5, 0, 6.284); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  };
+
+  /* ═════════════════════════════════════════════ reveal grid
+     Twelve different signs, which a beat later all turn into the same
+     sentence. The animation is the argument. */
+  const SIGN_NAMES = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo",
+                      "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  const SAME_LINE = "…a great need for other people to like and admire you.";
+  let flipTimers = [];
+
+  function resetFlipgrid() {
+    flipTimers.forEach(clearTimeout);
+    flipTimers = [];
+    $("#flipgrid").innerHTML = SIGN_NAMES
+      .map(s => `<div class="flipcard">${s}</div>`).join("");
+  }
+
+  function runFlipgrid() {
+    resetFlipgrid();
+    const cards = $$("#flipgrid .flipcard");
+    cards.forEach((card, i) => {
+      flipTimers.push(setTimeout(() => {
+        card.classList.add("same");
+        card.textContent = SAME_LINE;
+      }, 1500 + i * 110));
+    });
+  }
+  resetFlipgrid();
+
+  /* ═════════════════════════════════════════════ slides */
+  const slides = $$(".slide");
+  $("#tot").textContent = slides.length;
+  let idx = 0;
+
+  function go(n) {
+    idx = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, i) => {
+      s.classList.toggle("on", i === idx);
+      s.classList.remove("live");
+    });
+    const s = slides[idx];
+    void s.offsetWidth;                       // restart the entry animations
+    s.classList.add("live");
+    $$("[data-a]", s).forEach((el, i) => { el.style.animationDelay = (i * 85) + "ms"; });
+
+    $("#cur").textContent = idx + 1;
+    $("#bar").style.width = ((idx + 1) / slides.length * 100) + "%";
+    location.replace("#" + (idx + 1));
+
+    countUp(s);
+    if (s.querySelector("#twins")) setTimeout(drawTwins, 120);
+    if (s.querySelector("#flipgrid")) runFlipgrid(); else resetFlipgrid();
+    $$("[data-cloud]", s).forEach(el => renderCloud(el, cloudData[el.dataset.cloud] || []));
+    $$("[data-bars]", s).forEach(host => renderBars(host, lastValues[host.dataset.bars] || []));
+    $$("[data-qr]", s).forEach(paintQR);
+  }
+
+  addEventListener("keydown", (e) => {
+    if ($("#help").classList.contains("on") && e.key !== "?") { $("#help").classList.remove("on"); return; }
+    switch (e.key) {
+      case "ArrowRight": case " ": case "PageDown": case "Enter": e.preventDefault(); go(idx + 1); break;
+      case "ArrowLeft": case "PageUp": e.preventDefault(); go(idx - 1); break;
+      case "Home": go(0); break;
+      case "End": go(slides.length - 1); break;
+      case "f": case "F":
+        document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+        break;
+      case "?": $("#help").classList.toggle("on"); break;
+      case "a": case "A": {
+        const t = slides[idx].querySelector("#guess-answer");
+        if (t) t.style.visibility = "visible";
+        $$("[data-correct]", slides[idx]).forEach(host => {
+          host.dataset.revealed = "1";
+          renderBars(host, lastValues[host.dataset.bars] || []);
+        });
+        break;
+      }
+      case "r": case "R": {
+        const q = slides[idx].dataset.q;
+        if (q && confirm(`Clear all responses for "${q}"?`)) Live.clear(q);
+        break;
+      }
+    }
+  });
+
+  // click / tap to advance (ignore the help overlay)
+  addEventListener("click", (e) => {
+    if (e.target.closest("#help") || e.target.closest("#hud")) return;
+    go(idx + 1);
+  });
+
+  /* ═════════════════════════════════════════════ count-up numbers */
+  function countUp(slide) {
+    $$("[data-count]", slide).forEach(el => {
+      const target = Number(el.dataset.count);
+      const pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
+      if (reduce) { el.textContent = pre + target.toLocaleString("en-IN") + suf; return; }
+      const dur = 1100, t0 = performance.now();
+      const tick = (t) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = pre + Math.round(target * eased).toLocaleString("en-IN") + suf;
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* ═════════════════════════════════════════════ QR codes */
+  function paintQR(cv) {
+    const qid = cv.dataset.qr;
+    const url = Live.audienceURL(qid);
+    try {
+      QR.toCanvas(cv, url, { size: 640, quiet: 3, dark: "#07090F", light: "#FFFFFF" });
+    } catch (e) {
+      console.error("QR failed for", qid, e);
+    }
+    const lab = document.querySelector(`[data-qrurl="${qid}"]`);
+    if (lab) lab.textContent = url.replace(/^https?:\/\//, "");
+  }
+
+  /* ═════════════════════════════════════════════ live data */
+  const cloudData = {};
+  const lastValues = {};        // latest responses per question, so we can re-render on demand
+
+  // labels are pipe-separated: one of them contains a comma (₹1,182 Cr)
+  function renderBars(host, values) {
+    const keys = host.dataset.keys.split("|");
+    const labels = host.dataset.labels.split("|");
+    const correct = host.dataset.correct;
+    const tally = keys.map(k => values.filter(v => String(v) === k).length);
+    const max = Math.max(1, ...tally);
+
+    if (!host.children.length) {
+      host.innerHTML = keys.map((_, i) => `
+        <div class="bar-row">
+          <span class="bar-lab">${labels[i]}</span>
+          <div class="bar-track"><div class="bar-fill"></div></div>
+          <span class="bar-val">0</span>
+        </div>`).join("");
+    }
+    $$(".bar-row", host).forEach((row, i) => {
+      const fill = $(".bar-fill", row);
+      fill.style.width = (tally[i] / max * 100) + "%";
+      // the right answer only lights up once the presenter reveals it
+      fill.classList.toggle("hit", !!correct && keys[i] === correct && host.dataset.revealed === "1");
+      $(".bar-val", row).textContent = tally[i];
+    });
+  }
+
+  function renderCloud(host, words) {
+    if (!words.length) {
+      host.innerHTML = `<p class="lead dim" style="text-align:center;padding-top:14vmin">waiting for the room…</p>`;
+      return;
+    }
+    const freq = {};
+    words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+    const list = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 34);
+    const max = list[0][1];
+
+    host.innerHTML = "";
+    const W = host.clientWidth, H = host.clientHeight;
+    const placed = [];
+
+    list.forEach(([text, n], i) => {
+      const size = 1.9 + Math.pow(n / max, .62) * 5.6;         // vmin
+      const el = document.createElement("span");
+      el.className = "cloud-word";
+      el.textContent = text;
+      el.style.fontSize = size + "vmin";
+      el.style.color = i === 0 ? "var(--gold)" : i < 4 ? "var(--text)" : "var(--text-mid)";
+      host.appendChild(el);
+
+      const bw = el.offsetWidth, bh = el.offsetHeight;
+      let a = Math.random() * 6.28, rad = 0, x = W / 2, y = H / 2;
+      for (let step = 0; step < 1400; step++) {
+        x = W / 2 + rad * Math.cos(a);
+        y = H / 2 + rad * Math.sin(a) * .58;
+        const box = { x: x - bw / 2, y: y - bh / 2, w: bw, h: bh };
+        const inside = box.x > 2 && box.y > 2 && box.x + box.w < W - 2 && box.y + box.h < H - 2;
+        const clear = !placed.some(p =>
+          !(box.x + box.w + 8 < p.x || box.x > p.x + p.w + 8 ||
+            box.y + box.h + 5 < p.y || box.y > p.y + p.h + 5));
+        if (inside && clear) break;
+        a += .35; rad += .85;
+      }
+      placed.push({ x: x - bw / 2, y: y - bh / 2, w: bw, h: bh });
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      setTimeout(() => el.classList.add("in"), 45 * i);
+    });
+  }
+
+  function setConn(state) {
+    const dot = $("#conn"), txt = $("#conn-txt");
+    dot.classList.toggle("off", state !== "live");
+    txt.textContent = state === "live" ? "live" : state === "retrying" ? "reconnecting" : "offline";
+  }
+
+  const QUESTIONS = ["reading", "uncertain", "guess", "horoscope"];
+  QUESTIONS.forEach(qid => {
+    Live.subscribe(qid, (values) => {
+      lastValues[qid] = values;
+      $$(`[data-count-for="${qid}"]`).forEach(el => { el.textContent = values.length; });
+
+      $$(`[data-bars="${qid}"]`).forEach(host => renderBars(host, values));
+
+      if (qid === "reading") {
+        const nums = values.map(Number).filter(n => n >= 1 && n <= 5);
+        const avg = nums.length ? (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(2) : "—";
+        $$('[data-avg="reading"]').forEach(el => { el.textContent = avg; });
+      }
+      if (qid === "uncertain") {
+        cloudData[qid] = values.filter(v => typeof v === "string");
+        const host = slides[idx].querySelector(`[data-cloud="${qid}"]`);
+        if (host) renderCloud(host, cloudData[qid]);
+      }
+    }, setConn);
+  });
+
+  if (!Live.enabled) setConn("off");
+
+  /* ═════════════════════════════════════════════ start */
+  const start = Math.max(0, (parseInt(location.hash.slice(1), 10) || 1) - 1);
+  go(start);
+  addEventListener("resize", () => {
+    $$("[data-cloud]", slides[idx]).forEach(el => renderCloud(el, cloudData[el.dataset.cloud] || []));
+    if (slides[idx].querySelector("#twins")) drawTwins();
+  });
+})();
+</script>
+</body>
+</html>
