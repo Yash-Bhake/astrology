@@ -156,6 +156,6 @@ for (let i = 0; i < 600; i++) {
   try { check(s); } catch (e) { console.error(`FAIL fuzz len=${len}: ${e.message}`); process.exit(1); }
 }
 
-console.log(`\nPASS — ${n} strings encoded and decoded back byte-for-byte.`);
+console.log(`\nPASS ${n} strings encoded and decoded back byte-for-byte.`);
 console.log('Format info, mask, zig-zag, block de-interleaving and all Reed-Solomon');
 console.log('syndromes verified. Versions 1-10, EC level M.');

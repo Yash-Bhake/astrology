@@ -1,5 +1,5 @@
 /* ============================================================
-   CONFIG — this is the only file you need to edit.
+   CONFIG: this is the only file you need to edit.
    ============================================================ */
 
 window.DECK_CONFIG = {
@@ -23,5 +23,5 @@ window.DECK_CONFIG = {
   baseURL: "",
 
   /* 4. Shown on the title slide. */
-  teamName: "Data & Analytics — New Joiners Cohort"
+  teamName: "Data & Analytics · Team Something"
 };

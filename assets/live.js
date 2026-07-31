@@ -1,4 +1,4 @@
-/* live.js — Firebase Realtime Database client over plain REST + EventSource.
+/* live.js. Firebase Realtime Database client over plain REST + EventSource.
  *
  * No SDK, no CDN, nothing to fail on venue WiFi. Firebase's REST endpoint
  * streams Server-Sent Events when the request carries `Accept: text/event-stream`,

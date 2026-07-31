@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070912">
-<title>The Reading — join in</title>
+<title>The Reading, join in</title>
 <link rel="stylesheet" href="assets/deck.css">
 <style>
   /* phone-first: the deck scale is built for a projector, so override it here */
@@ -34,7 +34,7 @@
     text-transform: uppercase; letter-spacing: .16em; color: var(--text-dim); }
   input, textarea {
     font: inherit; font-family: var(--mono); font-size: var(--t-body);
-    /* min-width:0 matters — date inputs have an intrinsic width that
+    /* min-width:0 matters, date inputs have an intrinsic width that
        otherwise pushes the whole page wider than a phone screen */
     width: 100%; min-width: 0; max-width: 100%;
     padding: .85rem .9rem;
@@ -122,10 +122,10 @@
     <p class="eyebrow">Your natal reading</p>
     <h2 class="h2" id="r-sign">Cancer</h2>
     <dl class="facts">
-      <div><dt>Sun sign</dt><dd id="f-sun">—</dd></div>
-      <div><dt>Ascendant</dt><dd id="f-asc">—</dd></div>
-      <div><dt>Moon nakshatra</dt><dd id="f-nak">—</dd></div>
-      <div><dt>Ruling planet</dt><dd id="f-rul">—</dd></div>
+      <div><dt>Sun sign</dt><dd id="f-sun">, </dd></div>
+      <div><dt>Ascendant</dt><dd id="f-asc">, </dd></div>
+      <div><dt>Moon nakshatra</dt><dd id="f-nak">, </dd></div>
+      <div><dt>Ruling planet</dt><dd id="f-rul">, </dd></div>
     </dl>
     <hr class="rule">
     <div class="reading" id="r-text"></div>
@@ -265,7 +265,7 @@
   const fail = (msg) => { $("err-msg").textContent = msg; show("err"); };
 
   async function send(value, heading, sub, extra) {
-    if (!Live.enabled) {           // no database configured — still show the outcome
+    if (!Live.enabled) {           // no database configured, still show the outcome
       finish(heading, sub, extra);
       return;
     }
@@ -288,9 +288,9 @@
     },
     horoscope: {
       eyebrow: "Last question",
-      q: "After all that — will you still check your horoscope?",
+      q: "After all that, will you still check your horoscope?",
       opts: [["yes", "Yes"], ["fun", "Only for fun"], ["no", "No"]],
-      done: ["Counted.", "Look up — this is the last slide."]
+      done: ["Counted.", "Look up, this is the last slide."]
     }
   };
 

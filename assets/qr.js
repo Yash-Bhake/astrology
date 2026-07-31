@@ -1,4 +1,4 @@
-/* qr.js — minimal QR encoder. Byte mode, error-correction level M, versions 1–10.
+/* qr.js, minimal QR encoder. Byte mode, error-correction level M, versions 1–10.
  *
  * Self-contained on purpose: the QR codes are the one thing that MUST work on
  * the day, so there is no CDN and no library to fail on venue WiFi.
