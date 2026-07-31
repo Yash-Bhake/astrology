@@ -46,6 +46,17 @@
     align-items: center; justify-content: center;
   }
   #help.on { display: flex; }
+
+  #flash {
+    position: fixed; left: 50%; bottom: 6vmin; z-index: 25;
+    transform: translate(-50%, 1rem);
+    background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--text); border-radius: 3px;
+    font-family: var(--mono); font-size: var(--t-label); letter-spacing: .1em;
+    padding: .9em 1.6em; opacity: 0; pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  #flash.on { opacity: 1; transform: translate(-50%, 0); }
   #help table { font-family: var(--mono); font-size: var(--t-body); border-collapse: collapse; }
   #help td { padding: .5em 1.6em .5em 0; color: var(--text-mid); }
   #help td:first-child { color: var(--gold); }
@@ -787,8 +798,11 @@
 </section>
 
 <!-- ══════════════════════ chrome ══════════════════════ -->
+<div id="flash"></div>
+
 <div id="hud">
   <span><span class="live-dot off" id="conn"></span><span id="conn-txt">offline</span></span>
+  <span class="dim">session <b id="sess">—</b></span>
   <span><b id="cur">1</b> / <span id="tot">1</span></span>
   <span class="dim">? help</span>
 </div>
@@ -800,7 +814,8 @@
     <tr><td>Home / End</td><td>First / last slide</td></tr>
     <tr><td>F</td><td>Fullscreen</td></tr>
     <tr><td>A</td><td>Reveal the answer (guess slide)</td></tr>
-    <tr><td>R</td><td>Clear this slide's live responses</td></tr>
+    <tr><td>r</td><td>Clear this slide's responses</td></tr>
+    <tr><td>Shift + R</td><td>Clear ALL responses in this session</td></tr>
     <tr><td>?</td><td>Close this</td></tr>
   </table>
 </div>
@@ -816,6 +831,7 @@
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   $("#team").textContent = (window.DECK_CONFIG || {}).teamName || "";
+  $("#sess").textContent = Live.session;
 
   /* ═════════════════════════════════════════════ starfield */
   (() => {
@@ -972,9 +988,18 @@
         });
         break;
       }
-      case "r": case "R": {
+      case "r": {
         const q = slides[idx].dataset.q;
-        if (q && confirm(`Clear all responses for "${q}"?`)) Live.clear(q);
+        if (!q) { flash("This slide has no live question"); break; }
+        if (confirm(`Clear responses for "${q}" in session "${Live.session}"?`)) {
+          Live.clear(q).then(() => flash(`Cleared "${q}"`));
+        }
+        break;
+      }
+      case "R": {   // shift+R — wipe every question in this session
+        if (confirm(`Clear ALL responses in session "${Live.session}"?\n\nThis wipes every question. Other sessions are untouched.`)) {
+          Live.clearAll().then(() => flash("All responses cleared"));
+        }
         break;
       }
     }
@@ -1092,6 +1117,15 @@
     const dot = $("#conn"), txt = $("#conn-txt");
     dot.classList.toggle("off", state !== "live");
     txt.textContent = state === "live" ? "live" : state === "retrying" ? "reconnecting" : "offline";
+  }
+
+  let flashTimer = null;
+  function flash(msg) {
+    const el = $("#flash");
+    el.textContent = msg;
+    el.classList.add("on");
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => el.classList.remove("on"), 2200);
   }
 
   const QUESTIONS = ["reading", "uncertain", "guess", "horoscope"];

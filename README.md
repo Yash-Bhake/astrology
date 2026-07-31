@@ -87,12 +87,34 @@ there is nothing to update. If you ever need to override it, set `baseURL` in `c
 | `Home` / `End` | First / last slide |
 | `F` | Fullscreen |
 | `A` | Reveal the answer on the revenue-guess slide |
-| `R` | Clear this slide's live responses |
+| `r` | Clear **this slide's** responses |
+| `Shift + R` | Clear **all** responses in the current session |
 | `?` | Keyboard help |
 
-The bottom-right corner shows **live / reconnecting / offline** so you can tell at a glance
-whether responses are coming through. The slide number is in the URL — reload and you land
+The bottom-right corner shows **live / reconnecting / offline** and the **session name**, so
+you always know what you're pointed at. The slide number is in the URL — reload and you land
 back on the same slide.
+
+### Resetting responses
+
+Three ways, from most to least surgical:
+
+1. **`Shift + R`** — wipes every question in the current session. Asks first. The charts and
+   word cloud go back to empty immediately; nobody needs to reload anything.
+2. **`r`** — clears just the question on the slide you're standing on.
+3. **Switch session** — add `?s=` to the URL and you get a completely fresh, empty set of
+   responses without deleting anything:
+
+   ```
+   index.html?s=team-test     ← rehearse with your team
+   index.html?s=dry-run-2     ← another clean run
+   index.html                 ← the real thing (uses config.js: "live-1")
+   ```
+
+   **The session travels through the QR codes automatically**, so phones scanning during a
+   `?s=team-test` rehearsal write into that session and can't contaminate the real one.
+   This is the safest option on the day: rehearse on a throwaway session, then present on
+   the clean default.
 
 ### The four audience moments
 

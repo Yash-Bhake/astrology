@@ -15,11 +15,17 @@
 
   var cfg = global.DECK_CONFIG || {};
   var DB = String(cfg.databaseURL || "").replace(/\/+$/, "");
-  var SESSION = cfg.session || "live";
+  // ?s=whatever in the URL beats config.js, so you can rehearse on a throwaway
+  // session without editing any files. QR codes carry the session through.
+  var SESSION = new URLSearchParams(global.location.search).get("s") || cfg.session || "live";
   var enabled = /^https:\/\//.test(DB);
 
+  function sessionRoot() {
+    return DB + "/sessions/" + encodeURIComponent(SESSION);
+  }
+
   function endpoint(qid) {
-    return DB + "/sessions/" + encodeURIComponent(SESSION) + "/" + encodeURIComponent(qid) + ".json";
+    return sessionRoot() + "/" + encodeURIComponent(qid) + ".json";
   }
 
   function audienceBase() {
@@ -49,6 +55,13 @@
   function clear(qid) {
     if (!enabled) return Promise.resolve();
     return fetch(endpoint(qid), { method: "DELETE" });
+  }
+
+  /* Wipe every question in this session. Live subscriptions get a `put` with
+     null and redraw themselves empty, so no reload is needed. */
+  function clearAll() {
+    if (!enabled) return Promise.resolve();
+    return fetch(sessionRoot() + ".json", { method: "DELETE" });
   }
 
   /* Subscribe to one question. Returns an unsubscribe function.
@@ -104,6 +117,7 @@
     session: SESSION,
     submit: submit,
     clear: clear,
+    clearAll: clearAll,
     subscribe: subscribe,
     audienceURL: audienceURL,
     audienceBase: audienceBase
