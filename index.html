@@ -13,7 +13,7 @@
   .slide {
     position: fixed; inset: 0; z-index: 2;
     display: none;
-    padding: 7vmin 6vmin 7vmin;
+    padding: 5vmin 5vmin 5.5vmin;
     flex-direction: column; justify-content: center;
     opacity: 0;
   }
@@ -25,7 +25,7 @@
   .slide.live [data-a] { animation: enter .75s cubic-bezier(.2,.85,.3,1) both; }
   @keyframes enter { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
-  .inner { width: 100%; max-width: 116rem; margin: 0 auto; }
+  .inner { width: 100%; max-width: 126rem; margin: 0 auto; }
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: 6vmin; align-items: center; }
   .split.qr { grid-template-columns: auto 1fr; }
   @media (max-aspect-ratio: 1/1) { .split { grid-template-columns: 1fr; gap: 3vmin; } }
@@ -62,7 +62,7 @@
   #help td:first-child { color: var(--gold); }
 
   /* ---------------------------------------------- title slide */
-  .constel { position: relative; width: 100%; height: 30vmin; }
+  .constel { position: relative; width: 100%; height: 26vmin; }
   .constel canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 
   /* ---------------------------------------------- reveal grid */
@@ -71,7 +71,7 @@
     aspect-ratio: 1; border: 1px solid var(--line); border-radius: 3px;
     background: var(--panel);
     display: grid; place-items: center;
-    font-family: var(--mono); font-size: clamp(.6rem, 1.5vmin, 1.1rem);
+    font-family: var(--mono); font-size: clamp(.72rem, 1.85vmin, 1.4rem);
     color: var(--text-dim); text-align: center; padding: .4em;
     transition: transform .5s cubic-bezier(.3,.9,.3,1), background-color .5s, color .5s, border-color .5s;
   }
@@ -80,12 +80,12 @@
   .flipcard.same { background: rgba(227,178,60,.1); border-color: var(--gold); color: var(--gold); }
 
   /* ---------------------------------------------- the paragraph */
-  .para { font-size: clamp(1rem, 2.15vmin, 1.9rem); line-height: 1.65; }
+  .para { font-size: clamp(1.2rem, 2.75vmin, 2.5rem); line-height: 1.6; }
   .para span { display: block; margin-bottom: .35em; position: relative; padding-right: 12em; }
   .para em {
     position: absolute; right: 0; top: .2em;
     font-family: var(--mono); font-style: normal;
-    font-size: clamp(.55rem, 1.05vmin, .85rem);
+    font-size: clamp(.66rem, 1.3vmin, 1.1rem);
     text-transform: uppercase; letter-spacing: .14em;
     color: var(--gold); border: 1px solid var(--gold-dim);
     border-radius: 999px; padding: .25em .9em; white-space: nowrap;
@@ -100,11 +100,13 @@
     width: 1.5vmin; height: 1.5vmin; border-radius: 50%;
     background: var(--bg); border: 2px solid var(--gold); }
   .tl-item:last-child::before { border-color: var(--cyan); }
-  .tl-when { font-family: var(--mono); font-size: var(--t-label); letter-spacing: .16em; color: var(--gold); }
+  .tl-when { font-family: var(--mono); font-size: clamp(.78rem, 1.65vmin, 1.45rem); letter-spacing: .16em; color: var(--gold); }
+  .tl-item .body { font-size: clamp(1.05rem, 2.6vmin, 2.3rem); }
+  .tl-item .h2 { margin-top: .25em; }
   .tl-item:last-child .tl-when { color: var(--cyan); }
 
   /* ---------------------------------------------- dot field */
-  #twins { width: 100%; height: 42vmin; }
+  #twins { width: 100%; height: 48vmin; }
 
   /* ---------------------------------------------- tiers */
   .tier { display: grid; grid-template-columns: auto 1fr auto; gap: 3vmin;
@@ -120,7 +122,7 @@
   .loop { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.4vmin; align-items: stretch; }
   .loop-step {
     background: var(--panel); border: 1px solid var(--line); border-radius: 3px;
-    padding: 2vmin 1.6vmin; font-size: clamp(.8rem, 1.65vmin, 1.35rem);
+    padding: 2.4vmin 1.9vmin; font-size: clamp(.95rem, 2.1vmin, 1.85rem);
     line-height: 1.35; position: relative;
   }
   .loop-step b { display: block; font-family: var(--mono); font-size: var(--t-label);
@@ -141,7 +143,7 @@
   .vs-col { padding: 2.4vmin 0; }
   .vs-mid { width: 1px; background: var(--line); }
   .vs-row { padding: 1.4vmin 0; border-bottom: 1px solid var(--line-soft);
-    font-size: clamp(.85rem, 1.75vmin, 1.4rem); }
+    font-size: clamp(1.02rem, 2.25vmin, 1.95rem); }
   .vs-row:last-child { border-bottom: 0; }
 
   /* ---------------------------------------------- takeaways */
@@ -157,14 +159,14 @@
   .take:nth-child(3) b { color: var(--rose); }
 
   .qlist { display: flex; flex-direction: column; gap: 2vmin; counter-reset: q; }
-  .qitem { display: grid; grid-template-columns: 2.4em 1fr; gap: 1.6vmin; align-items: baseline;
-    font-size: clamp(1rem, 2.3vmin, 2rem); line-height: 1.35; }
+  .qitem { display: grid; grid-template-columns: 2.4em 1fr; gap: 1.8vmin; align-items: baseline;
+    font-size: clamp(1.45rem, 3.6vmin, 3.3rem); line-height: 1.3; }
   .qitem::before { counter-increment: q; content: counter(q);
     font-family: var(--mono); color: var(--gold); font-size: .75em; }
 
   blockquote { margin: 0; }
-  .quote { font-size: clamp(1.2rem, 3.1vmin, 2.9rem); line-height: 1.35; font-style: italic; }
-  .quote-by { font-family: var(--mono); font-size: var(--t-label);
+  .quote { font-size: clamp(1.7rem, 5.1vmin, 4.9rem); line-height: 1.28; font-style: italic; }
+  .quote-by { font-family: var(--mono); font-size: clamp(.8rem, 1.7vmin, 1.5rem);
     letter-spacing: .2em; text-transform: uppercase; color: var(--text-dim); margin-top: 1.6vmin; }
 </style>
 </head>
